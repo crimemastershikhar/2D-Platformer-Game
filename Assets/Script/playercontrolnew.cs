@@ -1,15 +1,30 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class playercontrolnew : MonoBehaviour
 {
     public Animator animator;
     public float race;
     public float jump;
+    public scorecontroller scorecontroller;
     //creating a local variable linked to Jump force
     // public manually drag // private mein code defines it 
     public Rigidbody2D rb2d;
+
+    public void KillPlayer()
+    {
+        Debug.Log("Player killed by Enemy");
+        ReloadLevel();
+            }
+
+    public void ReloadLevel()
+    {
+        Debug.Log("Reloading Scene");
+        SceneManager.LoadScene(0);
+    }
 
     private void Update()
     {
@@ -37,6 +52,11 @@ public class playercontrolnew : MonoBehaviour
         {
             animator.SetBool("Jump", false);
         }
+    }
+        public void pickupKey()
+    {
+        Debug.Log("Picked the Key");
+        scorecontroller.Increasescore(100);
     }
 
     private void MoveCharacter(float speed, float vertical)
