@@ -10,6 +10,7 @@ public class playercontrolnew : MonoBehaviour
     public float race;
     public float jump;
     public scorecontroller scorecontroller;
+    public gameovercontroller gameovercontroller;
     public gamecontrol gc;
     public float health;
     //creating a local variable linked to Jump force
@@ -21,8 +22,11 @@ public class playercontrolnew : MonoBehaviour
         if(health <= 0)
         {
             animator.SetBool("Die", true);
+            
         }
-        }
+        gameovercontroller.PlayerDied();
+      this.enabled = false;
+    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
 
@@ -31,14 +35,12 @@ public class playercontrolnew : MonoBehaviour
             health -= 1;
             gc.healthsystem(health);
         }
-
     }
     private void Update()
     {
-        //speed after float can take any name and Horizontal is used to move player in Unity backend
         float speed = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Jump");
-        
+      
         MoveCharacter(speed, vertical);
         playermovementanimation(speed, vertical);
         if (Input.GetKeyDown(KeyCode.LeftControl))
@@ -80,6 +82,8 @@ public class playercontrolnew : MonoBehaviour
             rb2d.AddForce(new Vector2(0, jump), ForceMode2D.Force);
         }
     }
+/*    Vector2 movement = new Vector2(rb2d.velocity.x, jumpForce);
+    rb2d.velocity = movement;*/
 
         //Extracted code from above
         private void playermovementanimation(float speed, float vertical)
