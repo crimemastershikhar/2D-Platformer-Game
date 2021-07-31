@@ -1,21 +1,22 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
-namespace Assets.Script.Level
+[RequireComponent(typeof(Button))]
+public class levelloader : MonoBehaviour
 {
-    public class levelloader : MonoBehaviour
+    private Button button;
+    public string LevelName;
+        
+    private void Awake()
     {
-
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+        button = GetComponent<Button>();
+        button.onClick.AddListener(onClick);
+    }
+    private void onClick()
+    {
+        SceneManager.LoadScene(LevelName);
     }
 }

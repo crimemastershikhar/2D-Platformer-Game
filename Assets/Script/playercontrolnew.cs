@@ -22,11 +22,16 @@ public class playercontrolnew : MonoBehaviour
         if(health <= 0)
         {
             animator.SetBool("Die", true);
-            
+            Invoke(nameof(DieAnimation), 1.5f);
         }
-        gameovercontroller.PlayerDied();
-      this.enabled = false;
+//      this.enabled = false;
     }
+    private void DieAnimation()
+    {
+        gameovercontroller.PlayerDied();
+        Time.timeScale = 0;
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
 

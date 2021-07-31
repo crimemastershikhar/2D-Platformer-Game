@@ -6,13 +6,14 @@ using UnityEngine.UI;
 
 public class gameovercontroller : MonoBehaviour
 {
-    public Button quit;
+    
     private void Awake()
     {
         buttonRestart.onClick.AddListener(ReloadLevel);
-        quit.onClick.AddListener(Lobby);
+//        quit.onClick.AddListener(Lobby);
         
     }
+//    public Button quit;
     public void Lobby()
     {
         SceneManager.LoadScene(0);
@@ -20,11 +21,11 @@ public class gameovercontroller : MonoBehaviour
     public Button buttonRestart;
     public void PlayerDied()
     {
-        gameObject.SetActive(true);   
+        gameObject.SetActive(true);
     }
     public void ReloadLevel()
     {
-        Invoke(nameof(ReloadLevel), 1.5f);
-        SceneManager.LoadScene(1    );
+        SceneManager.LoadScene(1);
+//        Time.timeScale = 1f;
     }
 }
