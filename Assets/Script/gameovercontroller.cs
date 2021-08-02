@@ -9,11 +9,8 @@ public class gameovercontroller : MonoBehaviour
     
     private void Awake()
     {
-        buttonRestart.onClick.AddListener(ReloadLevel);
-//        quit.onClick.AddListener(Lobby);
-        
+        buttonRestart.onClick.AddListener(ReloadLevel);      
     }
-//    public Button quit;
     public void Lobby()
     {
         SceneManager.LoadScene(0);
