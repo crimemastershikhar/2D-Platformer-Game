@@ -7,14 +7,19 @@ using UnityEngine.SceneManagement;
 public class playercontrolnew : MonoBehaviour
 {
     public Animator animator;
-    public float race;
-    public float jump;
+    public float Speed;
+    public float JumpForce;
     public scorecontroller scorecontroller;
     public gameovercontroller gameovercontroller;
     public gamecontrol gc;
+    const float GroundedRadius = .2f;
     public float health;
-    //creating a local variable linked to Jump force
-    // public manually drag // private mein code defines it 
+    private bool Grounded;
+    private float horizontal;
+    private bool jump = false;
+//    private bool crouch = false;
+    [SerializeField] private LayerMask WhatIsGround;
+    [SerializeField] Transform GroundCheck;
     public Rigidbody2D rb2d;
 
    public void KillPlayer()
@@ -22,9 +27,9 @@ public class playercontrolnew : MonoBehaviour
         if(health <= 0)
         {
             animator.SetBool("Die", true);
+            SoundManager.Instance.Play(Sounds.PlayerDeath);
             Invoke(nameof(DieAnimation), 1.5f);
         }
-//      this.enabled = false;
     }
     private void DieAnimation()
     {
@@ -40,14 +45,13 @@ public class playercontrolnew : MonoBehaviour
             health -= 1;
             gc.healthsystem(health);
         }
+        KillPlayer();
     }
     private void Update()
     {
-        float speed = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Jump");
-      
-        MoveCharacter(speed, vertical);
-        playermovementanimation(speed, vertical);
+        horizontal = Input.GetAxisRaw("Horizontal");
+        animator.SetFloat("speed", Mathf.Abs(horizontal));
+
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             animator.SetBool("Crouch", true);
@@ -56,52 +60,62 @@ public class playercontrolnew : MonoBehaviour
         {
             animator.SetBool("Crouch", false);
         }
-        //As jump is already in Unity Backend
-
-        if (vertical > 0)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            animator.SetBool("Jump", true);
+            jump = true;
+            animator.SetBool("IsJump", true);
         }
-        else
-        {
-            animator.SetBool("Jump", false);
-        }
-        KillPlayer();
+//        KillPlayer();
     }
-        public void pickupKey()
+    private void FixedUpdate()
+    {
+        bool wasGrounded = Grounded;
+        Grounded = false;
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(GroundCheck.position, GroundedRadius, WhatIsGround);
+        for(int i = 0; i<colliders.Length; i++)
+        {
+            if (colliders[i].gameObject != gameObject)
+            {
+                Grounded = true;
+                if(!wasGrounded)
+                {
+                    animator.SetBool("IsJump", false);
+                }
+            }
+        }
+        MoveCharacter(horizontal, jump);
+        playermovementanimation(horizontal);
+        jump = false;
+    }
+    
+    public void pickupKey()
     {
         Debug.Log("Picked the Key");
         scorecontroller.Increasescore(100);
     }
 
-    private void MoveCharacter(float speed, float vertical)
+    private void MoveCharacter(float horizontal, bool jump)
     {
-        //move char. horizontally
         Vector3 position = transform.position;
-        position.x = position.x + speed * race * Time.deltaTime;
+        position.x += horizontal* Speed * Time.deltaTime;
         transform.position = position;
-
-        //move char. vertically
-        if (vertical>0)
+        if (Grounded && jump)
         {
-            rb2d.AddForce(new Vector2(0, jump), ForceMode2D.Force);
+            Grounded = false;
+            rb2d.AddForce(new Vector2(0f, JumpForce));
         }
     }
-/*    Vector2 movement = new Vector2(rb2d.velocity.x, jumpForce);
-    rb2d.velocity = movement;*/
-
-        //Extracted code from above
-        private void playermovementanimation(float speed, float vertical)
+        private void playermovementanimation(float horizontal)
         {
-            animator.SetFloat("speed", Mathf.Abs(speed));
+            animator.SetFloat("speed", Mathf.Abs(horizontal));
             Vector3 scale = transform.localScale;
-            if (speed < 0)
+            if (horizontal < 0)
             {
-                scale.x = -1 * Mathf.Abs(speed);
+                scale.x = -1 * Mathf.Abs(horizontal);
             }
-            else if (speed > 0)
+            else if (horizontal > 0)
             {
-                scale.x = Mathf.Abs(speed);
+                scale.x = Mathf.Abs(horizontal);
             }
             transform.localScale = scale;
         }
