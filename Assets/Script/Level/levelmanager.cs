@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
     {
     private static levelmanager instance;
     public static levelmanager Instance { get { return instance; } }
-    public string Level1;
+    public string[] Levels;
     private void Awake()
     {
         if(instance == null)
@@ -19,26 +19,32 @@ using UnityEngine.SceneManagement;
             Destroy(gameObject);
         }
     }
-
-    internal void MarkCurrentLevelComplete()
+/*        internal void MarkCurrentLevelComplete()
     {
         throw new NotImplementedException();
-    }
+    }*/
 
     private void Start()
     {
-        if(GetLevelStatus(Level1) == LevelStatus.Locked)
+        if(GetLevelStatus(Levels[0]) == LevelStatus.Locked)
         {
-            SetLevelStatus(Level1, LevelStatus.Unlocked);
+            SetLevelStatus(Levels[0], LevelStatus.Unlocked);
         }
     }
-    public void MarkCurrentLevelComplete(string level)
+    public void MarkCurrentLevelComplete()
     {
         Scene currentscene = SceneManager.GetActiveScene();
-        SetLevelStatus(currentscene.name, LevelStatus.Completed);
-        int nextSceneIndex = currentscene.buildIndex + 1;
-        Scene nextScene = SceneManager.GetSceneByBuildIndex(nextSceneIndex);
-        SetLevelStatus(nextScene.name, LevelStatus.Unlocked);
+        /*        SetLevelStatus(currentscene.name, LevelStatus.Completed);
+                int nextSceneIndex = currentscene.buildIndex + 1;
+                Scene nextScene = SceneManager.GetSceneByBuildIndex(nextSceneIndex);
+                SceneManager.
+                SetLevelStatus(nextScene.name, LevelStatus.Unlocked);*/
+        int CurrentSceneIndex = Array.FindIndex(Levels, level => level == currentscene.name);
+        int NextSceneIndex = CurrentSceneIndex + 1;
+        if(NextSceneIndex < Levels.Length)
+        {
+            SetLevelStatus(Levels[NextSceneIndex], LevelStatus.Unlocked);
+        }
     }
     public LevelStatus GetLevelStatus(string level)
     {

@@ -6,10 +6,9 @@ using UnityEngine.UI;
 
 public class gameovercontroller : MonoBehaviour
 {
-    
     private void Awake()
     {
-        buttonRestart.onClick.AddListener(ReloadLevel);      
+        buttonRestart.onClick.AddListener(ReloadLevel);
     }
     public void Lobby()
     {
@@ -22,7 +21,8 @@ public class gameovercontroller : MonoBehaviour
     }
     public void ReloadLevel()
     {
-        SceneManager.LoadScene(1);
-//        Time.timeScale = 1f;
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.buildIndex);
+        Time.timeScale = 1f;
     }
 }
