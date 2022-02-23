@@ -1,16 +1,38 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class playercontrolnew : MonoBehaviour
 {
     public Animator animator;
     public float race;
     public float jump;
+    public scorecontroller scorecontroller;
+    public gamecontrol gc;
+    public float health;
     //creating a local variable linked to Jump force
     // public manually drag // private mein code defines it 
     public Rigidbody2D rb2d;
 
+   public void KillPlayer()
+        {
+        if(health <= 0)
+        {
+            animator.SetBool("Die", true);
+        }
+        }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+
+        if (collision.gameObject.GetComponent<Patrol>() != null)
+        {
+            health -= 1;
+            gc.healthsystem(health);
+        }
+
+    }
     private void Update()
     {
         //speed after float can take any name and Horizontal is used to move player in Unity backend
@@ -37,6 +59,12 @@ public class playercontrolnew : MonoBehaviour
         {
             animator.SetBool("Jump", false);
         }
+        KillPlayer();
+    }
+        public void pickupKey()
+    {
+        Debug.Log("Picked the Key");
+        scorecontroller.Increasescore(100);
     }
 
     private void MoveCharacter(float speed, float vertical)
